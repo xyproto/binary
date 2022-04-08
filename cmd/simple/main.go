@@ -9,7 +9,7 @@ import (
 
 func main() {
 	filename := os.Args[0]
-	isBinary, err := binary.BinaryFile(filename)
+	isBinary, err := binary.File(filename)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "%s\n", err)
 		os.Exit(1)

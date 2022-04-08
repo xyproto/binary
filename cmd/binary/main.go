@@ -7,7 +7,7 @@ import (
 	"github.com/xyproto/binary"
 )
 
-const versionString = "binary 1.2.0"
+const versionString = "binary 1.3.0"
 
 func main() {
 	if len(os.Args) <= 1 {
@@ -17,7 +17,7 @@ func main() {
 	}
 	filenames := os.Args[1:]
 	for _, filename := range filenames {
-		isBinary, err := binary.BinaryFile(filename)
+		isBinary, err := binary.File(filename)
 		if err != nil {
 			fmt.Fprintf(os.Stderr, "%s\n", err)
 			os.Exit(1)

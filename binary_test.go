@@ -5,8 +5,8 @@ import (
 	"testing"
 )
 
-func TestBinaryFile(t *testing.T) {
-	isBinary, err := BinaryFile("testdata/exe1")
+func TestFile(t *testing.T) {
+	isBinary, err := File("testdata/exe1")
 	if err != nil {
 		t.Error(err)
 	}
@@ -14,7 +14,7 @@ func TestBinaryFile(t *testing.T) {
 		t.FailNow()
 	}
 
-	isBinary, err = BinaryFile("testdata/exe2")
+	isBinary, err = File("testdata/exe2")
 	if err != nil {
 		t.Error(err)
 	}
@@ -22,7 +22,7 @@ func TestBinaryFile(t *testing.T) {
 		t.FailNow()
 	}
 
-	isBinary, err = BinaryFile("testdata/conf1")
+	isBinary, err = File("testdata/conf1")
 	if err != nil {
 		t.Error(err)
 	}
@@ -30,7 +30,7 @@ func TestBinaryFile(t *testing.T) {
 		t.FailNow()
 	}
 
-	isBinary, err = BinaryFile("testdata/conf2")
+	isBinary, err = File("testdata/conf2")
 	if err != nil {
 		t.Error(err)
 	}
@@ -38,7 +38,7 @@ func TestBinaryFile(t *testing.T) {
 		t.FailNow()
 	}
 
-	isBinary, err = BinaryFile("testdata/fstab")
+	isBinary, err = File("testdata/fstab")
 	if err != nil {
 		t.Error(err)
 	}
@@ -46,7 +46,7 @@ func TestBinaryFile(t *testing.T) {
 		t.FailNow()
 	}
 
-	isBinary, err = BinaryFile("testdata/hai")
+	isBinary, err = File("testdata/hai")
 	if err != nil {
 		t.Error(err)
 	}
@@ -55,16 +55,16 @@ func TestBinaryFile(t *testing.T) {
 	}
 }
 
-// binaryFile is a helper function for testing the BinaryData function
+// binaryFile is a helper function for testing the Data function
 func binaryFile(filename string) (bool, error) {
 	data, err := ioutil.ReadFile(filename)
 	if err != nil {
 		return false, err
 	}
-	return BinaryData(data), nil
+	return Data(data), nil
 }
 
-func TestBinaryData(t *testing.T) {
+func TestData(t *testing.T) {
 	isBinary, err := binaryFile("testdata/exe1")
 	if err != nil {
 		t.Error(err)
