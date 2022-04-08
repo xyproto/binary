@@ -6,18 +6,19 @@ import (
 	"unicode/utf8"
 )
 
+// probablyBinaryData is designed to examine a byte slice that is 24 bytes long, or less.
+// If there are more than 1/3 null bytes, it's considered to be binary.
+// If the bytes can be converted to an utf8 string, it's considered to be text.
 func probablyBinaryData(b []byte) bool {
-	//fmt.Printf("%v\n", b)
 	zeroCount := bytes.Count(b, []byte{0})
 	if zeroCount > len(b)/3 {
-		// Suspiciously many zero bytes; more than a third of them.
 		return true
 	}
 	return !utf8.ValidString(string(b))
 }
 
 // BinaryFile tries to determine if the given filename is a binary file by reading the first, last
-// and middle 24 bytes, counting the zero bytes and trying to convert the data to utf8.
+// and middle 24 bytes, then using the probablyBinaryData function on each of them in turn.
 func BinaryFile(filename string) (bool, error) {
 	file, err := os.Open(filename)
 	if err != nil {
@@ -28,7 +29,6 @@ func BinaryFile(filename string) (bool, error) {
 	// Go to the end of the file, minus 24 bytes
 	fileLength, err := file.Seek(-24, os.SEEK_END)
 	if err != nil || fileLength < 24 {
-		//fmt.Println(filename, "could not seek to -24 and/or the file is too short")
 
 		// Go to the start of the file, ignore errors
 		_, err = file.Seek(0, os.SEEK_SET)
@@ -43,6 +43,7 @@ func BinaryFile(filename string) (bool, error) {
 			// The file is too short, decide it's a text file
 			return false, nil
 		}
+		// Shorten the byte slice in case less than 24 bytes were read
 		fileBytes = fileBytes[:n]
 
 		// Check if it's likely to be a binary file, based on the few available bytes
@@ -56,10 +57,7 @@ func BinaryFile(filename string) (bool, error) {
 	if err != nil {
 		return false, err
 	}
-	// Shorten the byte slice
-	//last24 = last24[:last24count]
 
-	// fmt.Printf("last24 %v %s\n", last24, string(last24))
 	if last24count > 0 && probablyBinaryData(last24) {
 		return true, nil
 	}
@@ -79,10 +77,7 @@ func BinaryFile(filename string) (bool, error) {
 		if err != nil {
 			return false, err
 		}
-		// Shorten the byte slice
-		//first24 = first24[:first24count]
 
-		//fmt.Printf("first24 %v %s\n", first24, string(first24))
 		if first24count > 0 && probablyBinaryData(first24) {
 			return true, nil
 		}
@@ -103,10 +98,7 @@ func BinaryFile(filename string) (bool, error) {
 		if err != nil {
 			return false, err
 		}
-		// Shorten the byte slice
-		//middle24 = middle24[:middle24count]
 
-		// fmt.Printf("middle24 %v %s\n", middle24, string(middle24))
 		return middle24count > 0 && probablyBinaryData(middle24), nil
 	}
 
