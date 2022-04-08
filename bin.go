@@ -6,21 +6,14 @@ import (
 	"unicode/utf8"
 )
 
-func probablyBinary24(b []byte) bool {
+func probablyBinaryData(b []byte) bool {
+	//fmt.Printf("%v\n", b)
 	zeroCount := bytes.Count(b, []byte{0})
 	if zeroCount > len(b)/3 {
-		// Suspiciously many zero bytes, more than a third of them.
-		// Likely to be binary data.
+		// Suspiciously many zero bytes; more than a third of them.
 		return true
 	}
 	return !utf8.ValidString(string(b))
-}
-
-func probablyBinary(first24, middle24, last24 []byte) bool {
-	// 	fmt.Printf("first24 %v %s\n", first24, string(first24))
-	// 	fmt.Printf("middle24 %v %s\n", middle24, string(middle24))
-	// 	fmt.Printf("last24 %v %s\n", last24, string(last24))
-	return probablyBinary24(first24) || probablyBinary24(middle24) || probablyBinary24(last24)
 }
 
 // BinaryFile tries to determine if the given filename is a binary file by reading the first, last
@@ -32,13 +25,28 @@ func BinaryFile(filename string) (bool, error) {
 	}
 	defer file.Close()
 
-	const EndOfFile = 2
-	const CurrentPosition = 1
-	const StartOfFile = 0
+	// Go to the end of the file, minus 24 bytes
+	fileLength, err := file.Seek(-24, os.SEEK_END)
+	if err != nil || fileLength < 24 {
+		//fmt.Println(filename, "could not seek to -24 and/or the file is too short")
 
-	lastPositionMinus24, err := file.Seek(-24, EndOfFile)
-	if err != nil {
-		return false, err
+		// Go to the start of the file, ignore errors
+		_, err = file.Seek(0, os.SEEK_SET)
+
+		// Read up to 24 bytes
+		fileBytes := make([]byte, 24)
+		n, err := file.Read(fileBytes)
+		if err != nil {
+			// Could not read the file
+			return false, err
+		} else if n == 0 {
+			// The file is too short, decide it's a text file
+			return false, nil
+		}
+		fileBytes = fileBytes[:n]
+
+		// Check if it's likely to be a binary file, based on the few available bytes
+		return probablyBinaryData(fileBytes), nil
 	}
 
 	last24 := make([]byte, 24)
@@ -48,23 +56,21 @@ func BinaryFile(filename string) (bool, error) {
 	if err != nil {
 		return false, err
 	}
+	// Shorten the byte slice
+	//last24 = last24[:last24count]
 
-	if last24count == 0 {
-		// No data, decide it's not a binary
-		return false, nil
+	// fmt.Printf("last24 %v %s\n", last24, string(last24))
+	if last24count > 0 && probablyBinaryData(last24) {
+		return true, nil
 	}
 
-	// Are there enough bytes left to read the 24 last ones and the 24 center ones as well?
-	if lastPositionMinus24 >= 48 {
-
+	if fileLength-24 >= 24 {
 		first24 := make([]byte, 24)
 		first24count := 0
-		middle24 := make([]byte, 24)
-		middle24count := 0
 
 		// Go to the start of the file
-		_, err := file.Seek(0, StartOfFile)
-		if err != nil {
+		if _, err := file.Seek(0, os.SEEK_SET); err != nil {
+			// Could not go to the start of the file (!)
 			return false, err
 		}
 
@@ -73,29 +79,37 @@ func BinaryFile(filename string) (bool, error) {
 		if err != nil {
 			return false, err
 		}
+		// Shorten the byte slice
+		//first24 = first24[:first24count]
 
-		centerPos := (lastPositionMinus24 + 24) / 2
-
-		// Go to the center of the file
-		_, err = file.Seek(centerPos, CurrentPosition)
-		if err != nil {
-			return false, err
+		//fmt.Printf("first24 %v %s\n", first24, string(first24))
+		if first24count > 0 && probablyBinaryData(first24) {
+			return true, nil
 		}
+	}
 
-		// Read 24 bytes
+	if fileLength-24 >= 48 {
+
+		middle24 := make([]byte, 24)
+		middle24count := 0
+
+		middlePos := fileLength / 2
+
+		// Go to the middle of the file, relative to the start. Ignore errors.
+		_, _ = file.Seek(middlePos, os.SEEK_SET)
+
+		// Read 24 bytes from where MIGHT be the middle of the file
 		middle24count, err = file.Read(middle24)
 		if err != nil {
 			return false, err
 		}
+		// Shorten the byte slice
+		//middle24 = middle24[:middle24count]
 
-		if first24count == 0 && middle24count == 0 {
-			// This should never happen
-			return probablyBinary24(last24), nil
-		}
-
-		return probablyBinary(first24, middle24, last24), nil
+		// fmt.Printf("middle24 %v %s\n", middle24, string(middle24))
+		return middle24count > 0 && probablyBinaryData(middle24), nil
 	}
 
-	return probablyBinary24(last24), nil
-
+	// If it was a binary file, it should have been catched by one of the returns above
+	return false, nil
 }
