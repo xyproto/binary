@@ -35,7 +35,7 @@ import (
 
 func main() {
     filename := os.Args[0]
-    isBinary, err := binary.BinaryFile(filename)
+    isBinary, err := binary.File(filename)
     if err != nil {
         fmt.Fprintf(os.Stderr, "%s\n", err)
         os.Exit(1)
@@ -46,6 +46,6 @@ func main() {
 
 ## General info
 
-* Version: 1.2.0
+* Version: 1.3.0
 * License: BSD-3
 * Author: Alexander F. Rødseth &lt;xyproto@archlinux.org&gt;
