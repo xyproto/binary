@@ -16,10 +16,10 @@ With Go 1.17 or later:
 
     go install github.com/xyproto/bin/cmd/bin@latest
 
-## Using the utility
+## Example use
 
-* Running `bin /usr/bin/ls` returns `binary`.
-* Running `bin /etc/fstab` returns `text`.
+* `bin /usr/bin/ls` returns `binary`.
+* `bin /etc/fstab` returns `text`.
 
 ## Using the Go module
 
