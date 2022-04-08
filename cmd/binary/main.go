@@ -7,9 +7,12 @@ import (
 	"github.com/xyproto/bin"
 )
 
+const versionString = "binary 1.0.1"
+
 func main() {
 	if len(os.Args) <= 1 {
-		fmt.Fprintf(os.Stderr, "syntax: %s [FILENAME]\n", os.Args[0])
+		fmt.Fprintln(os.Stderr, versionString)
+		fmt.Fprintf(os.Stderr, "usage: %s [FILENAME]\n", os.Args[0])
 		os.Exit(1)
 	}
 	filenames := os.Args[1:]

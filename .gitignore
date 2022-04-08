@@ -1,3 +1,4 @@
+cmd/binary/binary
 cmd/simple/simple
-cmd/bin/bin
 include.txt
+*.pdf
