@@ -14,12 +14,12 @@ If the file is empty, it's decided to be a text file.
 
 With Go 1.17 or later:
 
-    go install github.com/xyproto/bin/cmd/bin@latest
+    go install github.com/xyproto/binary/cmd/binary@latest
 
 ## Example use
 
-* `bin /usr/bin/ls` returns `binary`.
-* `bin /etc/fstab` returns `text`.
+* `binary /usr/bin/ls` returns `binary`.
+* `binary /etc/fstab` returns `text`.
 
 ## Using the Go module
 
@@ -46,6 +46,6 @@ func main() {
 
 ## General info
 
-* Version: 1.0.0
+* Version: 1.0.1
 * License: BSD-3
 * Author: Alexander F. Rødseth &lt;xyproto@archlinux.org&gt;
