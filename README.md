@@ -1,4 +1,4 @@
-# bin
+# binary or text
 
 Go module and command line utility for checking if the given file is likely to be binary or text.
 
