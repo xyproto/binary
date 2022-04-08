@@ -1,3 +1,3 @@
-module github.com/xyproto/bin
+module github.com/xyproto/binary
 
 go 1.18

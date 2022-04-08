@@ -4,12 +4,12 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/xyproto/bin"
+	"github.com/xyproto/binary"
 )
 
 func main() {
 	filename := os.Args[0]
-	isBinary, err := bin.BinaryFile(filename)
+	isBinary, err := binary.BinaryFile(filename)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "%s\n", err)
 		os.Exit(1)
