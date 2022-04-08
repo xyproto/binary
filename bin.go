@@ -105,3 +105,22 @@ func BinaryFile(filename string) (bool, error) {
 	// If it was a binary file, it should have been catched by one of the returns above
 	return false, nil
 }
+
+// BinaryData tries to determine if the given data is binary by examining the first, last
+// and middle 24 bytes, then using the probablyBinaryData function on each of them in turn.
+func BinaryData(data []byte) bool {
+	l := len(data)
+	switch {
+	case l == 0:
+		return false
+	case l <= 24:
+		return probablyBinaryData(data)
+	case l <= 48:
+		return probablyBinaryData(data[:24]) || probablyBinaryData(data[24:])
+	case l <= 72:
+		return probablyBinaryData(data[:24]) || probablyBinaryData(data[24:48]) || probablyBinaryData(data[48:])
+	default: // l > 72
+		middle := l / 2
+		return probablyBinaryData(data[:24]) || probablyBinaryData(data[middle:middle+24]) || probablyBinaryData(data[l-24:])
+	}
+}
