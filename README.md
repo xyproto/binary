@@ -10,6 +10,8 @@ Also, if one of the blocks have more than 33% zero bytes, it's considered to be 
 
 If the file is empty, it's decided to be a text file.
 
+The `binary` utility has overlapping functionality with the `file` utility.
+
 ## Installing the utility
 
 With Go 1.17 or later:
