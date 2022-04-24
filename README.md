@@ -43,6 +43,8 @@ func main() {
 }
 ```
 
+The `binary.Data` function can be used to determine if a byte slice contains binary data or not.
+
 ## General info
 
 * Version: 1.3.0
