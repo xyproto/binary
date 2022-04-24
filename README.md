@@ -1,6 +1,6 @@
-# binary or text
+# Binary
 
-Go module and command line utility for checking if the given file is likely to be binary or text.
+Go module and command line utility for checking if the given file is likely to be **binary** or **text**.
 
 * It does so by reading the first, middle and last 24 bytes of the file and trying to convert the data to utf8.
 * If one of the 24 byte blocks can not be converted to utf8, it's considered to be a binary file.
