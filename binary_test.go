@@ -2,55 +2,78 @@ package binary
 
 import (
 	"io/ioutil"
+	"log"
 	"testing"
 )
 
 func TestFile(t *testing.T) {
-	isBinary, err := File("testdata/exe1")
+	filename := "testdata/exe1"
+	isBinary, err := File(filename)
 	if err != nil {
 		t.Error(err)
 	}
 	if !isBinary {
+		log.Println("not detected as binary: " + filename)
 		t.FailNow()
 	}
 
-	isBinary, err = File("testdata/exe2")
+	filename = "testdata/exe2"
+	isBinary, err = File(filename)
 	if err != nil {
 		t.Error(err)
 	}
 	if !isBinary {
+		log.Println("not detected as binary: " + filename)
 		t.FailNow()
 	}
 
-	isBinary, err = File("testdata/conf1")
+	filename = "testdata/conf1"
+	isBinary, err = File(filename)
 	if err != nil {
 		t.Error(err)
 	}
 	if isBinary {
+		log.Println("not detected as text: " + filename)
 		t.FailNow()
 	}
 
-	isBinary, err = File("testdata/conf2")
+	filename = "testdata/conf2"
+	isBinary, err = File(filename)
 	if err != nil {
 		t.Error(err)
 	}
 	if isBinary {
+		log.Println("not detected as text: " + filename)
 		t.FailNow()
 	}
 
-	isBinary, err = File("testdata/fstab")
+	filename = "testdata/fstab"
+	isBinary, err = File(filename)
 	if err != nil {
 		t.Error(err)
 	}
 	if isBinary {
+		log.Println("not detected as text: " + filename)
 		t.FailNow()
 	}
 
-	isBinary, err = File("testdata/hai")
+	filename = "testdata/hai"
+	isBinary, err = File(filename)
 	if err != nil {
 		t.Error(err)
 	}
 	if isBinary {
+		log.Println("not detected as text: " + filename)
+		t.FailNow()
+	}
+
+	filename = "testdata/utf16.csv"
+	isBinary, err = File(filename)
+	if err != nil {
+		t.Error(err)
+	}
+	if isBinary {
+		log.Println("not detected as UTF16 text: " + filename)
 		t.FailNow()
 	}
 }
