@@ -47,6 +47,6 @@ The `binary.Data` function can be used to determine if a byte slice contains bin
 
 ## General info
 
-* Version: 1.3.0
+* Version: 1.3.1
 * License: BSD-3
 * Author: Alexander F. Rødseth &lt;xyproto@archlinux.org&gt;
