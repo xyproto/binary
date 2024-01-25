@@ -6,9 +6,9 @@ import (
 	"testing"
 )
 
-func TestFile(t *testing.T) {
+func TestFileAndUTF16(t *testing.T) {
 	filename := "testdata/exe1"
-	isBinary, err := File(filename)
+	isBinary, _, err := FileAndUTF16(filename)
 	if err != nil {
 		t.Error(err)
 	}
@@ -17,7 +17,7 @@ func TestFile(t *testing.T) {
 		t.FailNow()
 	}
 	filename = "testdata/exe2"
-	isBinary, err = File(filename)
+	isBinary, _, err = FileAndUTF16(filename)
 	if err != nil {
 		t.Error(err)
 	}
@@ -26,7 +26,7 @@ func TestFile(t *testing.T) {
 		t.FailNow()
 	}
 	filename = "testdata/conf1"
-	isBinary, err = File(filename)
+	isBinary, _, err = FileAndUTF16(filename)
 	if err != nil {
 		t.Error(err)
 	}
@@ -35,7 +35,7 @@ func TestFile(t *testing.T) {
 		t.FailNow()
 	}
 	filename = "testdata/conf2"
-	isBinary, err = File(filename)
+	isBinary, _, err = FileAndUTF16(filename)
 	if err != nil {
 		t.Error(err)
 	}
@@ -44,7 +44,7 @@ func TestFile(t *testing.T) {
 		t.FailNow()
 	}
 	filename = "testdata/fstab"
-	isBinary, err = File(filename)
+	isBinary, _, err = FileAndUTF16(filename)
 	if err != nil {
 		t.Error(err)
 	}
@@ -53,7 +53,7 @@ func TestFile(t *testing.T) {
 		t.FailNow()
 	}
 	filename = "testdata/hai"
-	isBinary, err = File(filename)
+	isBinary, _, err = FileAndUTF16(filename)
 	if err != nil {
 		t.Error(err)
 	}
@@ -62,27 +62,34 @@ func TestFile(t *testing.T) {
 		t.FailNow()
 	}
 	filename = "testdata/utf16.csv"
-	isBinary, err = File(filename)
+	var isUtf16 bool
+	isBinary, isUtf16, err = FileAndUTF16(filename)
 	if err != nil {
 		t.Error(err)
 	}
 	if isBinary {
-		log.Println("not detected as UTF16 text: " + filename)
+		log.Println("not detected as text: " + filename)
 		t.FailNow()
 	}
+	if !isUtf16 {
+		log.Println("not detected as UTF-16: " + filename)
+		t.FailNow()
+	}
+
 }
 
-// binaryFile is a helper function for testing the Data function
-func binaryFile(filename string) (bool, error) {
+// binaryFileAndUTF16 is a helper function for testing the Data function
+func binaryFileAndUTF16(filename string) (bool, bool, error) {
 	data, err := os.ReadFile(filename)
 	if err != nil {
-		return false, err
+		return false, false, err
 	}
-	return Data(data), nil
+	isBinary, isUtf16 := DataAndUTF16(data)
+	return isBinary, isUtf16, nil
 }
 
-func TestData(t *testing.T) {
-	isBinary, err := binaryFile("testdata/exe1")
+func TestDataAndUTF16(t *testing.T) {
+	isBinary, _, err := binaryFileAndUTF16("testdata/exe1")
 	if err != nil {
 		t.Error(err)
 	}
@@ -90,7 +97,7 @@ func TestData(t *testing.T) {
 		t.FailNow()
 	}
 
-	isBinary, err = binaryFile("testdata/exe2")
+	isBinary, _, err = binaryFileAndUTF16("testdata/exe2")
 	if err != nil {
 		t.Error(err)
 	}
@@ -98,7 +105,7 @@ func TestData(t *testing.T) {
 		t.FailNow()
 	}
 
-	isBinary, err = binaryFile("testdata/conf1")
+	isBinary, _, err = binaryFileAndUTF16("testdata/conf1")
 	if err != nil {
 		t.Error(err)
 	}
@@ -106,7 +113,7 @@ func TestData(t *testing.T) {
 		t.FailNow()
 	}
 
-	isBinary, err = binaryFile("testdata/conf2")
+	isBinary, _, err = binaryFileAndUTF16("testdata/conf2")
 	if err != nil {
 		t.Error(err)
 	}
@@ -114,7 +121,7 @@ func TestData(t *testing.T) {
 		t.FailNow()
 	}
 
-	isBinary, err = binaryFile("testdata/fstab")
+	isBinary, _, err = binaryFileAndUTF16("testdata/fstab")
 	if err != nil {
 		t.Error(err)
 	}
@@ -122,7 +129,7 @@ func TestData(t *testing.T) {
 		t.FailNow()
 	}
 
-	isBinary, err = binaryFile("testdata/hai")
+	isBinary, _, err = binaryFileAndUTF16("testdata/hai")
 	if err != nil {
 		t.Error(err)
 	}
@@ -130,4 +137,15 @@ func TestData(t *testing.T) {
 		t.FailNow()
 	}
 
+	var isUtf16 bool
+	isBinary, isUtf16, err = binaryFileAndUTF16("testdata/utf16.csv")
+	if err != nil {
+		t.Error(err)
+	}
+	if isBinary {
+		t.FailNow()
+	}
+	if !isUtf16 {
+		t.FailNow()
+	}
 }
