@@ -4,10 +4,10 @@ Go module and command line utility for checking if the given file or data is lik
 
 * It does so by reading the first, middle and last 24 bytes of the file and trying to convert the data to utf8.
 * If one of the 24 byte blocks can not be converted to utf8, it's considered to be a binary file.
+* If the first 24 bytes indicates that it's a binary file, the deduction is done, and no more seeking or reading will happen.
 * Also, if one of the blocks have more than 33% zero bytes, it's considered to be a binary file.
 * If the file is empty, it's considered to be a text file.
 * The `binary` utility has overlapping functionality with the `file` utility, but with a more limited focus.
-* If the first 24 bytes indicates that it's a binary file, the deduction is done, and no more seeking or reading will happen.
 
 ## Installing the utility
 
