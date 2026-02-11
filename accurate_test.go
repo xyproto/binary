@@ -22,7 +22,6 @@ func TestMagicSignatures(t *testing.T) {
 		{"Plain text", []byte("Hello, World!"), false},
 		{"Empty data", []byte{}, false},
 	}
-
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			result := hasMagicSignature(tt.data)
@@ -48,7 +47,6 @@ func TestDataAccurate(t *testing.T) {
 		{"Control characters", []byte{0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07}, true},
 		{"ELF binary", []byte{0x7F, 0x45, 0x4C, 0x46, 0x02, 0x01, 0x01, 0x00}, true},
 	}
-
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			result := DataAccurate(tt.data)
@@ -74,7 +72,6 @@ func TestDataAccurateAndUTF16(t *testing.T) {
 		// for arbitrary even-length binary data without BOMs. The important thing is isBinary=true.
 		{"PNG header", []byte{0x89, 0x50, 0x4E, 0x47, 0x0D, 0x0A, 0x1A, 0x0A}, true, true},
 	}
-
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			isBinary, isUTF16 := DataAccurateAndUTF16(tt.data)
@@ -89,7 +86,6 @@ func TestDataAccurateAndUTF16(t *testing.T) {
 }
 
 func TestFileAccurate(t *testing.T) {
-	// Test existing test files
 	tests := []struct {
 		filename string
 		expected bool
@@ -102,7 +98,6 @@ func TestFileAccurate(t *testing.T) {
 		{"testdata/hai", false},
 		{"testdata/utf16.csv", false},
 	}
-
 	for _, tt := range tests {
 		t.Run(tt.filename, func(t *testing.T) {
 			isBinary, err := FileAccurate(tt.filename)
@@ -118,7 +113,6 @@ func TestFileAccurate(t *testing.T) {
 }
 
 func TestFileAccurateAndUTF16(t *testing.T) {
-	// Test the UTF-16 file
 	isBinary, isUTF16, err := FileAccurateAndUTF16("testdata/utf16.csv")
 	if err != nil {
 		t.Errorf("FileAccurateAndUTF16(testdata/utf16.csv) error: %v", err)
@@ -132,7 +126,6 @@ func TestFileAccurateAndUTF16(t *testing.T) {
 	}
 }
 
-// binaryFileAccurate is a helper function for testing the DataAccurate function
 func binaryFileAccurate(filename string) (bool, error) {
 	data, err := os.ReadFile(filename)
 	if err != nil {
@@ -153,7 +146,6 @@ func TestDataAccurateWithFiles(t *testing.T) {
 		{"testdata/fstab", false},
 		{"testdata/hai", false},
 	}
-
 	for _, tt := range tests {
 		t.Run(tt.filename, func(t *testing.T) {
 			isBinary, err := binaryFileAccurate(tt.filename)
@@ -176,7 +168,6 @@ func TestFileAccurateNonexistent(t *testing.T) {
 }
 
 func TestCompareAccurateVsQuick(t *testing.T) {
-	// Both methods should agree on clearly binary files
 	tests := []struct {
 		filename string
 		expected bool
@@ -186,7 +177,6 @@ func TestCompareAccurateVsQuick(t *testing.T) {
 		{"testdata/conf1", false},
 		{"testdata/conf2", false},
 	}
-
 	for _, tt := range tests {
 		t.Run(tt.filename, func(t *testing.T) {
 			quickResult, err := File(tt.filename)
@@ -199,7 +189,6 @@ func TestCompareAccurateVsQuick(t *testing.T) {
 				t.Errorf("FileAccurate(%s) error: %v", tt.filename, err)
 				return
 			}
-
 			if quickResult != tt.expected {
 				t.Errorf("File(%s) = %v, want %v", tt.filename, quickResult, tt.expected)
 			}
@@ -211,10 +200,8 @@ func TestCompareAccurateVsQuick(t *testing.T) {
 }
 
 func TestPNGDetection(t *testing.T) {
-	// Test that PNG files are correctly detected as binary
 	filename := "testdata/tiny.png"
 
-	// Test FileAccurate
 	isBinary, err := FileAccurate(filename)
 	if err != nil {
 		t.Errorf("FileAccurate(%s) error: %v", filename, err)
@@ -224,7 +211,6 @@ func TestPNGDetection(t *testing.T) {
 		t.Errorf("FileAccurate(%s) = false, want true (PNG should be detected as binary)", filename)
 	}
 
-	// Test File (quick method)
 	isBinaryQuick, err := File(filename)
 	if err != nil {
 		t.Errorf("File(%s) error: %v", filename, err)
@@ -234,7 +220,6 @@ func TestPNGDetection(t *testing.T) {
 		t.Logf("Note: File(%s) = false (quick method may miss small PNG files)", filename)
 	}
 
-	// Test DataAccurate with file contents
 	data, err := os.ReadFile(filename)
 	if err != nil {
 		t.Errorf("ReadFile(%s) error: %v", filename, err)
@@ -244,8 +229,6 @@ func TestPNGDetection(t *testing.T) {
 		t.Errorf("DataAccurate(PNG data) = false, want true")
 	}
 }
-
-// Benchmarks to compare quick vs accurate methods
 
 func BenchmarkFileQuick(b *testing.B) {
 	for i := 0; i < b.N; i++ {

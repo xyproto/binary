@@ -11,7 +11,7 @@ Go module and command line utility for checking if the given file or data is lik
 
 ## Installing the utility
 
-With Go 1.17 or later:
+With Go 1.24 or later:
 
     go install github.com/xyproto/binary/cmd/binary@latest
 
@@ -47,6 +47,6 @@ The `binary.Data` function can be used to determine if a byte slice contains bin
 
 ## General info
 
-* Version: 1.3.3
+* Version: 1.4.0
 * License: BSD-3
 * Author: Alexander F. Rødseth &lt;xyproto@archlinux.org&gt;
